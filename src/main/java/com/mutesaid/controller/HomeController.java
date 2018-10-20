@@ -1,7 +1,7 @@
 package com.mutesaid.controller;
 
-import com.mutesaid.mapper.ExpertMapper;
 import com.mutesaid.pojo.Expert;
+import com.mutesaid.service.ExpertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,20 +14,13 @@ import java.util.List;
 @RequestMapping("/home")
 public class HomeController {
     @Autowired
-    private ExpertMapper expertMapper;
+    private ExpertService expertService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String view(ModelMap model) {
-        List<Expert> expertList =  expertMapper.getAllExpert();
+        List<Expert> expertList =  expertService.getAllExpert();
         model.addAttribute("expertList", expertList);
 
         return "homepage";
-    }
-
-    @RequestMapping(value = "hello", method = RequestMethod.GET)
-    public String hello(ModelMap model) {
-
-
-        return "hello";
     }
 }

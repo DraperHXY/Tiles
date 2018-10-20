@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
+/**
+ *
+ * @author TwT
+ */
 public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private UsrService usrService;
@@ -18,11 +22,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         Cookie[] cookies = request.getCookies();
 
         Boolean isLogin = usrService.isLogin(cookies);
-
         if (isLogin){
             return true;
         }else {
-            response.sendRedirect("loginPage");
+            response.sendRedirect("/Tiles/loginPage");
             return false;
         }
     }

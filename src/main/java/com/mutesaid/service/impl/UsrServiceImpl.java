@@ -3,6 +3,7 @@ package com.mutesaid.service.impl;
 import com.mutesaid.mapper.UsrMapper;
 import com.mutesaid.pojo.Usr;
 import com.mutesaid.service.UsrService;
+import com.mutesaid.utils.CookieUtil;
 import com.mutesaid.utils.JJWTUtil;
 import com.mutesaid.utils.MD5Util;
 import org.apache.logging.log4j.LogManager;
@@ -19,20 +20,12 @@ public class UsrServiceImpl implements UsrService {
     @Autowired
     private UsrMapper usrMapper;
 
-    @Autowired
-    private MD5Util md5Util;
-
-    @Autowired
-    private JJWTUtil jjwtUtil;
-
-    Logger logger = LogManager.getLogger(UsrServiceImpl.class);
+    private Logger logger = LogManager.getLogger(UsrServiceImpl.class);
 
     @Override
-    public void insert(String name, String pwd) {
+    public void insert(Usr usr) {
         Long currentTime = System.currentTimeMillis();
-        String pwdIn = md5Util.encrypt(pwd, currentTime.toString());
-        Usr usr = new Usr();
-        usr.setName(name);
+        String pwdIn = MD5Util.encrypt(usr.getPwd(), currentTime.toString());
         usr.setPwd(pwdIn);
         usr.setCreateAt(currentTime);
         usr.setUpdateAt(currentTime);
@@ -44,36 +37,25 @@ public class UsrServiceImpl implements UsrService {
         return usrMapper.getByName(name)!=null;
     }
 
-    /**
-     * 判断用户名是否存在，判断密码是否正确
-     * @param name 用户名
-     * @param pwd 密码
-     * @return 判断结果
-     */
     @Override
     public Boolean isTrue(String name, String pwd) {
         Usr usr = usrMapper.getByName(name);
         if(usr==null){
-            logger.info("用户不存在");
             return false;
         }else {
-            String pwdIn = md5Util.encrypt(pwd, usr.getUpdateAt().toString());
-            return pwdIn.equals(usr.getPwd());
+            String pwdIn = MD5Util.encrypt(pwd, usr.getUpdateAt().toString());
+            return usr.getPwd().equals(pwdIn);
         }
     }
 
     @Override
     public Cookie setToken(String name) {
-        Long currentTime = System.currentTimeMillis();
-        Date expiration = new Date(currentTime + 600*1000);
-        Map<String, Object> payload = new HashMap<>();
+        String key = "abcd";
+        Map<String, Object> payload = new HashMap<>(1);
         payload.put("usrName", name);
 
-        String jwt = jjwtUtil.sign(payload,expiration,"abcd");
-        Cookie cookie =  new Cookie("token",jwt);
-        cookie.setMaxAge(10*60);
-        cookie.setPath("/");
-        return cookie;
+        String jwt = JJWTUtil.sign(payload, key);
+        return CookieUtil.addCookie("token", jwt);
     }
 
     @Override
@@ -81,12 +63,12 @@ public class UsrServiceImpl implements UsrService {
         return Arrays.stream(cookies)
                 .filter(cookie -> "token".equals(cookie.getName()))
                 .map(Cookie::getValue)
-                .anyMatch(cookie -> isTrueToken(cookie));
+                .anyMatch(this::isTrueToken);
     }
 
     @Override
     public  Map getTokenMap(String token) {
-        return jjwtUtil.verify(token, "abcd");
+        return JJWTUtil.verify(token, "abcd");
     }
 
     @Override

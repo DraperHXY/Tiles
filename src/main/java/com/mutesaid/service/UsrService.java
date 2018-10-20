@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Service
 public interface UsrService {
-    void insert(String name, String pwd);
+    void insert(Usr usr);
 
     Boolean hasUsrName(String name);
 

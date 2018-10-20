@@ -24,7 +24,7 @@
             <bean class="com.mutesaid.utils.CommonInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
-            <mvc:mapping path="/student/**"/>
+            <mvc:mapping path="/u/**"/>
             <bean class="com.mutesaid.utils.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

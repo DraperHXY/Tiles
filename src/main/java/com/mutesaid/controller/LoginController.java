@@ -1,6 +1,8 @@
 package com.mutesaid.controller;
 
 import com.mutesaid.service.UsrService;
+import com.mutesaid.utils.CookieUtil;
+import com.mutesaid.utils.ResponseBo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +14,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Controller
 public class LoginController {
     @Autowired
-    UsrService usrService;
+    private UsrService usrService;
+
+    @Autowired
+    private ResponseBo responseBo;
 
     @GetMapping(value = "/loginPage")
     public String loginPage() {
@@ -27,27 +33,20 @@ public class LoginController {
     public String login(HttpServletResponse response, RedirectAttributes model,
                         String name, String pwd) {
         if(!usrService.isTrue(name, pwd)) {
-            model.addFlashAttribute("msg","-账号或密码错误");
+            Map json = responseBo.msg("Input.usr.error");
+            model.addFlashAttribute("json", json);
             return "redirect:loginPage";
         }else {
             Cookie cookie = usrService.setToken(name);
-
             response.addCookie(cookie);
-            return "redirect:student";
+            return "redirect:u/student";
         }
     }
 
     @GetMapping(value = "/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if("token".equals(cookie.getName())) {
-                Cookie killCookie = new Cookie("token", null);
-                killCookie.setMaxAge(0);
-                killCookie.setPath("/");
-                response.addCookie(killCookie);
-            }
-        }
+    public String logout(HttpServletResponse response) {
+        response.addCookie(CookieUtil.killCookie("token"));
+
         return "redirect:loginPage";
     }
 }

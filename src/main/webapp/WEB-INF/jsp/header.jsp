@@ -29,7 +29,7 @@
             <ul class="nav navbar-nav">
                 <a href="/Tiles/home"><li>首 页</li></a>
                 <a href="/Tiles/job"><li class="border">职 业</li></a>
-                <a href="/Tiles/student"><li>推 荐</li></a>
+                <a href="/Tiles/u/student"><li>推 荐</li></a>
                 <a href=""><li>关 于</li></a>
             </ul>
         </div>

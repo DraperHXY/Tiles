@@ -1,28 +1,25 @@
 package com.mutesaid.pojo;
 
-import java.io.Serializable;
+
+import javax.validation.constraints.*;
+
+import org.hibernate.validator.constraints.Length;
 
 /**
  * @author 
  */
-public class Usr implements Serializable {
+public class Usr{
     private Long id;
 
-    /**
-     * 用户名
-     */
+    @Email(message = "Email.usr.name")
     private String name;
 
-    /**
-     * 密码
-     */
+    @Length(min = 6, max = 21, message = "Length.usr.pwd")
     private String pwd;
 
     private Long createAt;
 
     private Long updateAt;
-
-    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;

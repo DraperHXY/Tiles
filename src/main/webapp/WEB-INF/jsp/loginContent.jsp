@@ -7,7 +7,7 @@
     </div>
 
     <div style="position: absolute;right: 19rem;top: 25rem;">
-        <div style="font-size: 3rem;color: red;">信息：请登录后查看${msg}</div>
+        <div style="font-size: 3rem;color: red;">信息：请登录后查看${json.get("msg")}</div>
         <form action="/Tiles/login" method="post">
             <div>
                 <input style="margin-top: 2rem;height: 3rem;width: 31rem;" name="name" type="text" placeholder="请输入账号">

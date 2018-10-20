@@ -8,9 +8,7 @@ import java.security.MessageDigest;
 
 @Component
 public class MD5Util {
-    private Logger logger = LogManager.getLogger(MD5Util.class);
-
-    public String encrypt(String str, String salt) {
+    public static String encrypt(String str, String salt) {
         str += salt;
         try {
             // 返回实现指定摘要算法的 MessageDigest 对象
@@ -25,7 +23,7 @@ public class MD5Util {
             for(byte b : result) {
                 // 使用String的format方法进行转换
                 // 先把字节转成int再转成16进制，不足两位补0
-                buf.append(String.format("%02x", new Integer(b & 0xff)));
+                buf.append(String.format("%02x", b & 0xff));
             }
             return buf.toString();
         }catch (Exception e) {

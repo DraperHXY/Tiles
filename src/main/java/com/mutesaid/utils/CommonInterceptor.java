@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 用于拦截所有请求显示右上角信息
+ * @author TwT
+ */
 public class CommonInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private UsrService usrService;
