@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 public interface ProfessionMapper {
     List<Profession> getProfessList(String direction);
+
+    List<String> getDirection();
 }

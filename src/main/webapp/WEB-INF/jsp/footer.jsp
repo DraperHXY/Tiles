@@ -1,5 +1,5 @@
 <%@ include file="../include/include.jsp"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <div class="footer">
     <div class="container height">
         <div class="row">

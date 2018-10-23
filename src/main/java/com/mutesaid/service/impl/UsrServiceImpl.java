@@ -10,10 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.Cookie;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UsrServiceImpl implements UsrService {
@@ -23,7 +23,18 @@ public class UsrServiceImpl implements UsrService {
     private Logger logger = LogManager.getLogger(UsrServiceImpl.class);
 
     @Override
-    public void insert(Usr usr) {
+    public void insert(Usr usr, BindingResult error) throws IllegalArgumentException {
+        if (error.hasErrors()){
+            logger.info("用户参数校验失败");
+            String msg = Objects.requireNonNull(error.getFieldError()).getDefaultMessage();
+            throw new IllegalArgumentException(msg);
+        }
+        Boolean beUsed = hasUsrName(usr.getName());
+        if (beUsed) {
+            logger.info("用户名被占用");
+            throw new IllegalArgumentException("Beused.usr.name");
+        }
+
         Long currentTime = System.currentTimeMillis();
         String pwdIn = MD5Util.encrypt(usr.getPwd(), currentTime.toString());
         usr.setPwd(pwdIn);
@@ -38,14 +49,23 @@ public class UsrServiceImpl implements UsrService {
     }
 
     @Override
-    public Boolean isTrue(String name, String pwd) {
+    public void isTrue(String name, String pwd) {
         Usr usr = usrMapper.getByName(name);
         if(usr==null){
-            return false;
-        }else {
-            String pwdIn = MD5Util.encrypt(pwd, usr.getUpdateAt().toString());
-            return usr.getPwd().equals(pwdIn);
+            logger.info("用户名不存在");
+            throw new IllegalArgumentException("Input.usr.null");
         }
+        Boolean isMatch = pwdMatch(pwd, usr);
+        if(!isMatch){
+            logger.info("密码错误");
+            throw new IllegalArgumentException("Input.usr.match");
+        }
+    }
+
+    @Override
+    public Boolean pwdMatch(String pwd, Usr usr) {
+        String pwdIn = MD5Util.encrypt(pwd, usr.getUpdateAt().toString());
+        return usr.getPwd().equals(pwdIn);
     }
 
     @Override
@@ -56,31 +76,5 @@ public class UsrServiceImpl implements UsrService {
 
         String jwt = JJWTUtil.sign(payload, key);
         return CookieUtil.addCookie("token", jwt);
-    }
-
-    @Override
-    public Boolean isLogin(Cookie[] cookies) {
-        return Arrays.stream(cookies)
-                .filter(cookie -> "token".equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .anyMatch(this::isTrueToken);
-    }
-
-    @Override
-    public  Map getTokenMap(String token) {
-        return JJWTUtil.verify(token, "abcd");
-    }
-
-    @Override
-    public  Map getTokenMap(Cookie[] cookies) {
-        List<String> jwt = Arrays.stream(cookies)
-                .filter(cookie -> "token".equals(cookie.getName()))
-                .map(Cookie::getValue).collect(Collectors.toList());
-        return getTokenMap(jwt.get(0));
-    }
-
-    @Override
-    public Boolean isTrueToken(String token) {
-        return getTokenMap(token)!=null;
     }
 }

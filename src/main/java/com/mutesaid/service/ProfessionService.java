@@ -4,9 +4,10 @@ import com.mutesaid.pojo.Profession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ProfessionService {
 
-    List<Profession> getProfesList(String direction);
+    Map<String, List> getProfesList();
 }

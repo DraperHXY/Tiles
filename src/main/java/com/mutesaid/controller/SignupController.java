@@ -3,20 +3,17 @@ package com.mutesaid.controller;
 import com.mutesaid.pojo.Usr;
 import com.mutesaid.service.UsrService;
 import com.mutesaid.utils.ResponseBo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-
 import java.util.Map;
-import java.util.Objects;
-
 
 @Controller
 public class SignupController {
@@ -26,26 +23,27 @@ public class SignupController {
     @Autowired
     private ResponseBo responseBo;
 
-    @RequestMapping(value = "/signupPage", method = RequestMethod.GET)
+    private Logger logger = LogManager.getLogger(SignupController.class);
+
+    @GetMapping("/signupPage")
     public String signupPage() {
         return "signPage";
     }
 
     @PostMapping("/signup")
     public String signup(RedirectAttributes model, @Validated Usr usr, BindingResult error) {
-        if(usrService.hasUsrName(usr.getName())) {
-            Map json = responseBo.msg("Beused.usr.name");
+        try{
+            usrService.insert(usr, error);
+            return "redirect:loginPage";
+        }catch (IllegalArgumentException argE){
+            Map json = responseBo.msg(argE.getMessage());
             model.addFlashAttribute("json", json);
             return "redirect:signupPage";
-        }
-        if(error.hasErrors()){
-            String msg = Objects.requireNonNull(error.getFieldError()).getDefaultMessage();
-            Map json = responseBo.msg(msg);
+        }catch (Exception e) {
+            logger.info("未知异常{}",e);
+            Map json = responseBo.msg("Unknow.Exception");
             model.addFlashAttribute("json", json);
-            return "redirect:signupPage";
+            return "redirect:errorPage";
         }
-
-        usrService.insert(usr);
-        return "redirect:loginPage";
     }
 }

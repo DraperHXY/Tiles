@@ -1,5 +1,5 @@
 <%@ include file="../include/include.jsp"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false" %>
 
 <div class="top container">
     <p class="hidden-xs">客服热线：010-594-78634</p>

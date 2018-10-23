@@ -2,25 +2,21 @@ package com.mutesaid.service;
 
 import com.mutesaid.pojo.Usr;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.Cookie;
 import java.util.Map;
 
 @Service
 public interface UsrService {
-    void insert(Usr usr);
+    void insert(Usr usr, BindingResult error);
 
     Boolean hasUsrName(String name);
 
-    Boolean isTrue(String name, String pwd);
+    void isTrue(String name, String pwd);
+
+    Boolean pwdMatch(String pwd, Usr usr);
 
     Cookie setToken(String name);
-
-    Boolean isLogin(Cookie[] cookies);
-
-    Map getTokenMap(String token);
-
-    Map getTokenMap(Cookie[] cookies);
-
-    Boolean isTrueToken(String token);
 }

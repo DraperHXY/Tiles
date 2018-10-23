@@ -24,4 +24,7 @@
     <select id="getProfessList" resultMap="BaseResultMap">
         select * from profession where direction = #{direction}
     </select>
+    <select id="getDirection" resultType="String">
+        select distinct direction from profession
+    </select>
 </mapper>
