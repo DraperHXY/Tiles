@@ -23,7 +23,7 @@ public class UsrServiceImpl implements UsrService {
     private Logger logger = LogManager.getLogger(UsrServiceImpl.class);
 
     @Override
-    public void insert(Usr usr, BindingResult error) throws IllegalArgumentException {
+    public void insert(Usr usr, BindingResult error) {
         if (error.hasErrors()){
             logger.info("用户参数校验失败");
             String msg = Objects.requireNonNull(error.getFieldError()).getDefaultMessage();
