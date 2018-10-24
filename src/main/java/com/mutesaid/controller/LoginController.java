@@ -3,7 +3,6 @@ package com.mutesaid.controller;
 import com.mutesaid.service.UsrService;
 import com.mutesaid.utils.CookieUtil;
 import com.mutesaid.utils.ResponseBo;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
