@@ -20,9 +20,6 @@ public class LoginController {
     @Autowired
     private UsrService usrService;
 
-    @Autowired
-    private ResponseBo responseBo;
-
     private Logger logger = LogManager.getLogger(LoginController.class);
 
     @GetMapping(value = "/loginPage")
@@ -41,12 +38,12 @@ public class LoginController {
             return "redirect:u/student";
         }catch(IllegalArgumentException argE){
             logger.info("用户名密码不合法");
-            Map json = responseBo.msg(argE.getMessage());
+            Map json = ResponseBo.msg(argE.getMessage());
             model.addFlashAttribute("json", json);
             return "redirect:loginPage";
         }catch (Exception e) {
             logger.info("未知异常{}",e);
-            Map json = responseBo.msg("Unknow.Exception");
+            Map json = ResponseBo.msg("Unknow.Exception");
             model.addFlashAttribute("json", json);
             return "redirect:errorPage";
         }

@@ -17,6 +17,8 @@ import java.util.*;
 
 @Service
 public class UsrServiceImpl implements UsrService {
+    private static final String JWT_KEY = "www.jnshu.com";
+
     @Autowired
     private UsrMapper usrMapper;
 
@@ -70,11 +72,10 @@ public class UsrServiceImpl implements UsrService {
 
     @Override
     public Cookie setToken(String name) {
-        String key = "abcd";
         Map<String, Object> payload = new HashMap<>(1);
         payload.put("usrName", name);
 
-        String jwt = JJWTUtil.sign(payload, key);
+        String jwt = JJWTUtil.sign(payload, JWT_KEY);
         return CookieUtil.addCookie("token", jwt);
     }
 }

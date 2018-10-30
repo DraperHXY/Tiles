@@ -20,9 +20,6 @@ public class SignupController {
     @Autowired
     private UsrService usrService;
 
-    @Autowired
-    private ResponseBo responseBo;
-
     private Logger logger = LogManager.getLogger(SignupController.class);
 
     @GetMapping("/signupPage")
@@ -36,12 +33,12 @@ public class SignupController {
             usrService.insert(usr, error);
             return "redirect:loginPage";
         }catch (IllegalArgumentException argE){
-            Map json = responseBo.msg(argE.getMessage());
+            Map json = ResponseBo.msg(argE.getMessage());
             model.addFlashAttribute("json", json);
             return "redirect:signupPage";
         }catch (Exception e) {
             logger.info("未知异常{}",e);
-            Map json = responseBo.msg("Unknow.Exception");
+            Map json = ResponseBo.msg("Unknow.Exception");
             model.addFlashAttribute("json", json);
             return "redirect:errorPage";
         }

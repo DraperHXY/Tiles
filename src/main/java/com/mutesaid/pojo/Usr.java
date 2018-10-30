@@ -5,10 +5,13 @@ import javax.validation.constraints.*;
 
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 /**
  * @author 
  */
-public class Usr{
+public class Usr implements Serializable {
+
     private Long id;
 
     @Email(message = "Email.usr.name")
@@ -20,6 +23,8 @@ public class Usr{
     private Long createAt;
 
     private Long updateAt;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -60,4 +65,15 @@ public class Usr{
     public void setUpdateAt(Long updateAt) {
         this.updateAt = updateAt;
     }
+
+//    @Override
+//    public String toString() {
+//        return "Usr{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", pwd='" + pwd + '\'' +
+//                ", createAt=" + createAt +
+//                ", updateAt=" + updateAt +
+//                '}';
+//    }
 }

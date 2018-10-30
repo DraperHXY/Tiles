@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 /**
@@ -16,15 +17,22 @@ public class ResponseBo {
     @Autowired
     private MessageSource messageSource;
 
-    public Map msg(String msg) {
+    private static ResponseBo responseBo;
+
+    @PostConstruct
+    public void init(){
+        responseBo = this;
+    }
+
+    public static Map msg(String msg) {
         Gson gson = new Gson();
-        String error = messageSource.getMessage(msg,null, null);
+        String error = responseBo.messageSource.getMessage(msg,null, null);
         return gson.fromJson(error, Map.class);
     }
 
-    public Map msg(String msg, Object data) {
+    public static Map msg(String msg, Object data) {
         Gson gson = new Gson();
-        String error = messageSource.getMessage(msg,null, null);
+        String error = responseBo.messageSource.getMessage(msg,null, null);
         Map map = gson.fromJson(error, Map.class);
         map.put("data",data);
         return map;

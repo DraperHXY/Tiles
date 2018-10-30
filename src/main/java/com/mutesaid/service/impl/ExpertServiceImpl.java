@@ -3,6 +3,7 @@ package com.mutesaid.service.impl;
 import com.mutesaid.mapper.ExpertMapper;
 import com.mutesaid.pojo.Expert;
 import com.mutesaid.service.ExpertService;
+import com.mutesaid.utils.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,6 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Override
     public List<Expert> getAllExpert() {
-        return expertMapper.getAllExpert();
+        return CacheUtil.get("exprtList", expertMapper::getAllExpert);
     }
 }

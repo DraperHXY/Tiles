@@ -3,6 +3,7 @@ package com.mutesaid.service.impl;
 import com.mutesaid.mapper.ProfessionMapper;
 import com.mutesaid.pojo.Profession;
 import com.mutesaid.service.ProfessionService;
+import com.mutesaid.utils.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,11 @@ public class ProfessionServiceImpl implements ProfessionService {
     private ProfessionMapper professionMapper;
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, List> getProfesList() {
-        List<String> directionList = professionMapper.getDirection();
-        @SuppressWarnings("unchecked")
+        List<String> directionList = CacheUtil.get("directionList", professionMapper::getDirection);
         Map<String, List> job = new HashMap(directionList.size());
-        directionList.forEach(item->job.put(item, professionMapper.getProfessList(item)));
+        directionList.forEach(item->job.put(item, CacheUtil.get(item, professionMapper::getProfessList)));
 
         return job;
     }
