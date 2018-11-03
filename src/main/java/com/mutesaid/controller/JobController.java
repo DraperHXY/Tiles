@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ public class JobController {
         Map<String, List> jobMap = professionService.getProfesList();
         model.addAttribute("jobMap",jobMap);
         Long end = System.currentTimeMillis();
-        logger.info("controller执行时间：{}",end-start);
+        logger.info("jobPage controller执行时间：{}ms",end-start);
         return "jobpage";
     }
 

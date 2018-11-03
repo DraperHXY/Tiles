@@ -29,15 +29,20 @@ public class SignupController {
 
     @PostMapping("/signup")
     public String signup(RedirectAttributes model, @Validated Usr usr, BindingResult error) {
+        logger.info("signup : usr = [{}]", usr);
         try{
             usrService.insert(usr, error);
+            logger.info("signup success");
             return "redirect:loginPage";
         }catch (IllegalArgumentException argE){
+            logger.error(argE.getMessage());
+            logger.error("signup parameters error");
             Map json = ResponseBo.msg(argE.getMessage());
             model.addFlashAttribute("json", json);
             return "redirect:signupPage";
-        }catch (Exception e) {
-            logger.info("未知异常{}",e);
+        }catch (Throwable t) {
+            logger.error(t.getMessage());
+            logger.error("signup unknown error");
             Map json = ResponseBo.msg("Unknow.Exception");
             model.addFlashAttribute("json", json);
             return "redirect:errorPage";

@@ -22,18 +22,14 @@ public class UsrServiceImpl implements UsrService {
     @Autowired
     private UsrMapper usrMapper;
 
-    private Logger logger = LogManager.getLogger(UsrServiceImpl.class);
-
     @Override
     public void insert(Usr usr, BindingResult error) {
         if (error.hasErrors()){
-            logger.info("用户参数校验失败");
             String msg = Objects.requireNonNull(error.getFieldError()).getDefaultMessage();
             throw new IllegalArgumentException(msg);
         }
         Boolean beUsed = hasUsrName(usr.getName());
         if (beUsed) {
-            logger.info("用户名被占用");
             throw new IllegalArgumentException("Beused.usr.name");
         }
 
@@ -54,12 +50,10 @@ public class UsrServiceImpl implements UsrService {
     public void isTrue(String name, String pwd) {
         Usr usr = usrMapper.getByName(name);
         if(usr==null){
-            logger.info("用户名不存在");
             throw new IllegalArgumentException("Input.usr.null");
         }
         Boolean isMatch = pwdMatch(pwd, usr);
         if(!isMatch){
-            logger.info("密码错误");
             throw new IllegalArgumentException("Input.usr.match");
         }
     }

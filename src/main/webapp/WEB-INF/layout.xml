@@ -28,6 +28,14 @@
     <definition name="errorPage" extends="homepage">
         <put-attribute name="body" value="/WEB-INF/jsp/errorContent.jsp"/>
     </definition>
+
+    <definition name="addPage" extends="homepage">
+        <put-attribute name="body" value="/WEB-INF/jsp/addContent.jsp"/>
+    </definition>
+
+    <definition name="updatePage" extends="homepage">
+        <put-attribute name="body" value="/WEB-INF/jsp/updateContent.jsp"/>
+    </definition>
 </tiles-definitions>
 
 

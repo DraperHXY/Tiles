@@ -1,19 +1,20 @@
 package com.mutesaid.utils;
 
-import com.danga.MemCached.MemCachedClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Component
 public class CacheUtil {
     @Autowired
-    private MemCachedClient memCachedClient;
+    private RedisTemplate<String, Object> redisTemplate;
 
     private static CacheUtil cacheUtil;
 
@@ -25,34 +26,46 @@ public class CacheUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T get(String key, Supplier<T> supplier){
-        T result = (T) cacheUtil.memCachedClient.get(key);
-        if (result!=null){
-            logger.info("缓存");
-            return result;
-        }else {
-            logger.info("数据库");
-            T bdResult = supplier.get();
-            set(key, bdResult);
-            return bdResult;
+    public static <T> List<T> getList(String key, Supplier<List<T>> supplier){
+        logger.info("select data from cache: key = [{}]", key);
+        try{
+            List<T> result = (List<T>) cacheUtil.redisTemplate.opsForList().range(key, 0, -1);
+            if(result==null || result.size()==0){
+                logger.info("first select set in cache");
+                List<T> dbResult = supplier.get();
+                set(key, dbResult);
+                return dbResult;
+            }else {
+                logger.info("select from cache");
+                return result;
+            }
+        }catch (Throwable t){
+            logger.info("cache error, select from DB");
+            return supplier.get();
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T get(String key, Function<String, T> function){
-        T result = (T) cacheUtil.memCachedClient.get(key);
-        if (result!=null){
-            logger.info("缓存");
-            return result;
-        }else {
-            logger.info("数据库");
-            T bdResult = function.apply(key);
-            set(key, bdResult);
-            return bdResult;
+    public static <T> List getList(String key, Function<String, List<T>> function){
+        logger.info("select data from cache: key = [{}]", key);
+        try{
+            List<T> result = (List<T>) cacheUtil.redisTemplate.opsForList().range(key, 0, -1);
+            if(result==null || result.size()==0){
+                logger.info("first select set in cache");
+                List<T> dbResult = function.apply(key);
+                set(key, dbResult);
+                return dbResult;
+            }else {
+                logger.info("select from cache");
+                return result;
+            }
+        }catch (Throwable t){
+            logger.info("cache error, select from DB");
+            return function.apply(key);
         }
     }
 
-    private static <T> void set(String key, T obj){
-        cacheUtil.memCachedClient.set(key,obj);
+    private static <T> void set(String key, List<T> obj){
+        obj.forEach(item->cacheUtil.redisTemplate.opsForList().rightPush(key, item));
     }
 }

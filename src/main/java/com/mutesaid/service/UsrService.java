@@ -3,10 +3,8 @@ package com.mutesaid.service;
 import com.mutesaid.pojo.Usr;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.Cookie;
-import java.util.Map;
 
 @Service
 public interface UsrService {

@@ -6,7 +6,7 @@
         <img src="${pageContext.request.contextPath}/imges/login-ad_03.png">
     </div>
 
-    <div style="position: absolute;right: 19rem;top: 25rem;">
+    <div style="position: absolute;right: 25rem;top: 29rem;">
         <div style="font-size: 3rem;color: red;">信息：请登录后查看${json.get("msg")}</div>
         <form action="/Tiles/login" method="post">
             <div>

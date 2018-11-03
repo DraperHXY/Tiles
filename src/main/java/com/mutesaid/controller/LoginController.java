@@ -3,6 +3,8 @@ package com.mutesaid.controller;
 import com.mutesaid.service.UsrService;
 import com.mutesaid.utils.CookieUtil;
 import com.mutesaid.utils.ResponseBo;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +32,22 @@ public class LoginController {
     @PostMapping(value = "/login")
     public String login(HttpServletResponse response, RedirectAttributes model,
                         String name, String pwd) {
+        logger.info("login : name = [{}] password = [{}]", name, pwd);
         try{
             usrService.isTrue(name, pwd);
-
             Cookie cookie = usrService.setToken(name);
             response.addCookie(cookie);
+            logger.info("login success");
             return "redirect:u/student";
         }catch(IllegalArgumentException argE){
-            logger.info("用户名密码不合法");
+            logger.error(argE.getMessage());
+            logger.error("login parameters error");
             Map json = ResponseBo.msg(argE.getMessage());
             model.addFlashAttribute("json", json);
             return "redirect:loginPage";
-        }catch (Exception e) {
-            logger.info("未知异常{}",e);
+        }catch (Throwable t) {
+            logger.error(t.getMessage());
+            logger.error("login unknown error");
             Map json = ResponseBo.msg("Unknow.Exception");
             model.addFlashAttribute("json", json);
             return "redirect:errorPage";

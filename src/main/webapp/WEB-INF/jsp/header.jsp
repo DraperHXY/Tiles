@@ -3,7 +3,7 @@
 
 <div class="top container">
     <p class="hidden-xs">客服热线：010-594-78634</p>
-    <p style="position: absolute;right: 20rem;">
+    <p style="position: absolute;right: 35rem;">
         <c:forEach items="${msgList}" var="msg">
             <a style="color: #29b078;" href="/Tiles/${msg.getValue()}">${msg.getKey()}</a>
         </c:forEach>
